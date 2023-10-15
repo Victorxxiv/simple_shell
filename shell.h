@@ -17,78 +17,39 @@
 #include <limits.h>
 #include <sys/cdefs.h>
 
-/* Macros */
-#define _TRUE 0
-#define _FALSE 1
-
-#define STDIN 0
-#define STDOUT 1
-#define STDERR 2
-
-#define NON_INTERACTIVE 0
-#define INTERACTIVE 1
-
-#define PERMISSIONS 1
-#define NON_PERMISSIONS -1
-
-#define _FILE 10
-#define NON_FILE -10
-
-#define _ENOENT "No such file or directory"
-#define _EACCES "Permission denied"
-#define _CMD_NOT_EXISTS "not found"
-#define _ILLEGAL_NUMBER "Illegal number"
-
-#define _CODE_ENOENT 3
-#define _CODE_EACCES 13
-#define _CODE_CMD_NOT_EXISTS 132
-#define _CODE_ILLEGAL_NUMBER 133
-
 /* Global Variables */
 extern char **environ;
 
-/* Structures */
+/* Function prototypes */
+void _print(const char *str);
+char *_strdup(const char *str);
+char *_strcpy(char *dest, const char *src);
+void trim_buffer(char *buffer);
+int main(int argc, char *argv[], char *env[]);
+size_t _strlen(const char *str);
+void child(int argc, char *argv[], char *buf,
+		char **args, char *only, int *status);
+int _strcmp(const char *string1, const char *string2);
+void tok_buf(char *buf, char *args[], const char *delimiters,
+		char *str, char *env[]);
 
-/* Structure to hold general shell-related information */
-typedef struct general_s
-{
-	int argc; /* Number of arguments passed to the shell */
-	char **argv; /* Array of argument strings */
-	int mode; /* Operating mode: INTERACTIVE or NON_INTERACTIVE */
-	int error_code; /* Error code for error messages */
-	char *command; /* Command to execute */
-	int n_commands; /* Number of commands executed */
-	char *value_path; /* Path of the executed command */
-	int is_current_path; /* Flag to check if path starts with a colon */
-	int status_code; /* Last exit status code */
-	char *buffer; /* Line read using getline */
-	char **arguments; /* Arguments split from the command line */
-	char *environment; /* Last retrieved environment variable */
-	int pid; /* Process ID of the shell */
-} general_t;
-
-/* Structure to represent error messages and codes */
-typedef struct
-{
-	char *message; /* Error message associated with the error */
-	int code; /* Error code used to identify the error message */
-} error_t;
-
-/* Structure to define built-in shell commands */
-typedef struct
-{
-	char *command; /* The name of the built-in command */
-	void (*func)(general_t *info, char **arguments);
-	/* Function pointer to the implementation of the built-in command */
-} builtin_t;
-
-void prompt(char **env);
-int check_builtin(general_t *info, char **arguments);
-void print(char *str);
-int _putchar(char c);
-int builtin(general_t *info, char **arguments);
-void bin_env(general_t *info, char **command);
-void display_environment(void);
-void is_current_path(char *path, general_t *info);
-
+char *take_only_cmd(char **buffer, int *no_exc,
+		                int argc, char *argv[], int *n_err);
+void ls_check(char *args[], char *buf, char *only);
+void change_dir(char *buffer, char *cmd, int argc, char *argv[], int *n_err);
+void comments(char **buf, int *no_exc);
+void tok(char **buffer, const char **delimiters, char **token, char **str, char *args[]);
+void handle_input_command(char **buffer, size_t *n_buffer,
+		                int *no_exc, char **only_command, int status,
+				int argc, char *argv[], int *n_err);
+void handle_sigint(int sig_num);                                                                                                     char *name_prg(int argc, char *argv[]);
+void shell_exit(int status);
+char *full_path(char *env[], char cmd[]);
+void myprintf(const char *format, ...);
+void tostring(int num);
+char *path_check(char path[]);
+void _env(void);
+void _envNon(int *no_exc);
+void non_interactive(int argc, char *argv[],
+		char *env[], int *pipe);
 #endif /* SHELL_H */

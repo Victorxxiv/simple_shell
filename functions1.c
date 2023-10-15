@@ -1,68 +1,51 @@
-#include "shell.h"
+#include "main.h"
 
 /**
-* builtin - Checks for and handles built-in shell commands
-* @info: Information about the shell
-* @arguments: Array of command and arguments
-* Return: _TRUE if built-in command, _FALSE otherwise
-*/
-
-int builtin(general_t *info, char **arguments)
+ * child - Spawn a child process and execute a command within it.
+ *
+ * This function creates a child process to run a specified command
+ * using the execve system call. It gracefully handles forking, execution,
+ * and error scenarios.
+ *
+ * @argc:  argument count.
+ * @argv: argument vector.
+ * @buf: command buffer.
+ * @ave: argument vector for execve.
+ * @only: command to execute.
+ * @status: The exit status.
+ */
+void child(int argc, char *argv[], char *buf, char *ave[],
+		char *only, int *status)
 {
-	int status;
+	signed int pid;
 
-	status = check_builtin(info, arguments);
-	if (status == _FALSE)
+	/* Ignore unused arguments */
+	(void)argv;
+	(void)argc;
+
+	/* Create a child process using the fork system call */
+	pid = fork();
+	if (pid == -1)
 	{
-		return (_FALSE);
+		perror("Failed to spawn a child process");
+		free(buf);
+		exit(EXIT_FAILURE);
 	}
-	return (_TRUE);
-}
-
-/**
-* bin_env - Implements the 'env' command
-* @info: General information about the shell
-* @command: Command and arguments (unused)
-**/
-void bin_env(general_t *info, char **command)
-{
-	(void) info;
-	(void) command;
-
-	display_environment();
-}
-
-/**
-* display_environment - Displays the entire environment
-**/
-void display_environment(void)
-{
-	char **env_var;
-	int index;
-
-	for (index = 0, env_var = environ; env_var[index] != NULL; index++)
+	if (pid == 0)
 	{
-		print(env_var[index]);
-		_putchar('\n');
+		/* In child process, attempt to execute command using execve */
+		execve(ave[0], ave, NULL);
+
+		/* Handle when execve fails, print error message, free memory */
+		perror("execve failed");
+		free(buf);
+		free(only);
+		exit(1);
 	}
-}
-
-/**
-* is_current_path - Checks if the PATH variable starts with a colon
-* @path: PATH variable to check
-* @info: General information about the shell
-**/
-void is_current_path(char *path, general_t *info)
-{
-	info->is_current_path = _FALSE;
-
-	if (path == NULL)
+	else
 	{
-		return;
-	}
-	if (path[0] == ':')
-	{
-		info->is_current_path = _TRUE;
+		/* In parent process, wait child process to collect status */
+		wait(status);
 	}
 }
 
