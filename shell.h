@@ -25,7 +25,7 @@ extern char **environ;
 /* Function prototypes */
 void print(const char *str);
 char *_strdup(const char *str);
-char *_strcpy(char *dest, const char *src);
+char *_strcpy(char *destination, const char *src);
 void trim_buffer(char *buffer);
 int main(int argc, char *argv[], char *env[]);
 size_t strlen(const char *str);
@@ -56,4 +56,6 @@ void env(void);
 void envNon(int *no_exc);
 void non_interactive(int argc, char *argv[],
 		char *env[], int *pipe);
+void _memmove(void *destination, const void *src, size_t n);
+
 #endif /* SHELL_H */
