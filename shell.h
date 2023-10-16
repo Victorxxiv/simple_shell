@@ -17,6 +17,7 @@
 #include <limits.h>
 #include <sys/cdefs.h>
 #include <dirent.h>
+#include <stdarg.h>
 
 /* Global Variables */
 extern char **environ;
