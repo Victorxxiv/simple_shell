@@ -16,6 +16,7 @@
 #include <stddef.h>
 #include <limits.h>
 #include <sys/cdefs.h>
+#include <dirent.h>
 
 /* Global Variables */
 extern char **environ;
@@ -44,7 +45,7 @@ void handle_input_command(char **buffer, size_t *n_buffer,
 		int *no_exc, char **only_command, int status,
 		int argc, char *argv[], int *n_err);
 void handle_sigint(int sig_num);
-char *name_prg(int argc, char *argv[]);
+char *name_program(int argc, char *argv[]);
 void shell_exit(int status);
 char *full_path(char *env[], char cmd[]);
 void myprintf(const char *format, ...);

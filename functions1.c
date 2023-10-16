@@ -18,7 +18,7 @@ char *name_program(int argc, char *argv[])
 }
 
 /**
- * take_only_cmd - Extort the first command from a string
+ * take_only_cmd - Extort the first cmd from a string
  *
  * @buffer: Input string with one or more commands
  * @no_exc: Pointer to handle 'continue' in a forked process
@@ -33,7 +33,7 @@ char *take_only_cmd(char **buffer, int *no_exc, int argc,
 	int i = 0;
 	char str_cmd[50], *cmd;
 
-	if (_strlen(*buffer) >= 50)
+	if (strlen(*buffer) >= 50)
 	{
 		perror("Command is too long\n");
 		free(*buffer), exit(1);
@@ -46,14 +46,14 @@ char *take_only_cmd(char **buffer, int *no_exc, int argc,
 		i++;
 	}
 	str_cmd[i] = '\0';
-	cmd = malloc(_strlen(str_cmd) + 1);
+	cmd = malloc(strlen(str_cmd) + 1);
 	if (!cmd)
 	{
 		perror("Failed to allocate memory");
 		exit(1);
 	}
 	strcpy(cmd, str_cmd);
-	if (_strcmp(cmd, "cd") == 0)
+	if (strcmp(cmd, "cd") == 0)
 	{
 		*no_exc = 0;
 		change_dir(*buffer, cmd, argc, argv, n_err);
@@ -74,8 +74,8 @@ void ls_check(char *ave[], char *buf, char *only)
 	DIR *dir;
 	int index = 1;
 
-	if (_strcmp(only, "ls") == 0 || _strcmp(ave[0], "/usr/bin/ls") == 0 ||
-			_strcmp(ave[0], "/bin/ls") == 0)
+	if (strcmp(only, "ls") == 0 || strcmp(ave[0], "/usr/bin/ls") == 0 ||
+			strcmp(ave[0], "/bin/ls") == 0)
 	{
 		while (ave[index])
 		{
